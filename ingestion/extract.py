@@ -58,11 +58,19 @@ CHUNK_SIZE = 50_000   # rows per BigQuery page
 LOAD_CHUNK = 500      # rows per INSERT (Supabase free tier limit)
 
 
+# Tables too large for Neon free tier — sample instead
+LARGE_TABLES = {
+    "events":      200_000,
+    "order_items": 200_000,
+}
+
 def build_query(table: str, date_filter: str | None = None) -> str:
     """Build the BigQuery SELECT query, optionally filtering by created_at."""
     base = f"SELECT * FROM `{BQ_DATASET}.{table}`"
     if date_filter and table in TIMESTAMP_COLS:
         base += f" WHERE created_at >= '{date_filter}'"
+    if table in LARGE_TABLES:
+        base += f" LIMIT {LARGE_TABLES[table]}"
     return base
 
 
