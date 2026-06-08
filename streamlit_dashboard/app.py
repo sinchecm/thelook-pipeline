@@ -46,13 +46,19 @@ st.markdown("""
 # ── Database ──────────────────────────────────────────────────────────────────
 @st.cache_resource
 def get_engine():
+    def _get(key, default):
+        try:
+            return st.secrets[key]
+        except Exception:
+            return os.getenv(key, default)
     url = (
         f"postgresql+psycopg2://"
-        f"{os.getenv('DW_USER', 'pipeline_user')}:"
-        f"{os.getenv('DW_PASSWORD', 'pipeline_pass')}"
-        f"@{os.getenv('DW_HOST', 'localhost')}:"
-        f"{os.getenv('DW_PORT', '5433')}"
-        f"/{os.getenv('DW_DATABASE', 'thelook_dw')}"
+        f"{_get('DW_USER', 'pipeline_user')}:"
+        f"{_get('DW_PASSWORD', 'pipeline_pass')}"
+        f"@{_get('DW_HOST', 'localhost')}:"
+        f"{_get('DW_PORT', '5432')}"
+        f"/{_get('DW_DATABASE', 'neondb')}"
+        f"?sslmode=require"
     )
     return create_engine(url, pool_pre_ping=True)
 
