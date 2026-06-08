@@ -32,7 +32,7 @@ def get_pooled_engine() -> Engine:
         f"/{os.getenv('DW_DATABASE')}"
     )
     return create_engine(url, pool_pre_ping=True,
-        connect_args={"options": "-csearch_path=marts,staging,raw,public"})
+        connect_args={"sslmode": "require"})
 
 
 def get_direct_engine() -> Engine:
@@ -47,7 +47,7 @@ def get_direct_engine() -> Engine:
         f"/{os.getenv('DBT_DATABASE')}"
     )
     return create_engine(url, pool_pre_ping=True,
-        connect_args={"options": "-csearch_path=marts,staging,raw,public"})
+        connect_args={"sslmode": "require"})
 
 
 @contextmanager
