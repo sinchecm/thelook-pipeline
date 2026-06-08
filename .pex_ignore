@@ -1,0 +1,8 @@
+.venv*
+.venv-meltano
+*.venv
+__pycache__
+.tmp_dagster_home*
+*.pyc
+*.pyo
+.git

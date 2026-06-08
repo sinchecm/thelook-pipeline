@@ -35,3 +35,6 @@ analysis/outputs/*.html
 .DS_Store
 Thumbs.db
 .tmp_dagster_home*
+.venv*
+.venv-meltano
+*.venv
