@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Cleaned orders — one row per order."
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: customer_id
+        tests: [not_null]
+      - name: status
+        tests:
+          - accepted_values:
+              values: [Cancelled, Complete, Shipped, Processing, Returned]
+
+  - name: stg_order_items
+    description: "Cleaned order items — grain of the pipeline (one row per item)."
+    columns:
+      - name: sale_id
+        tests: [unique, not_null]
+      - name: order_id
+        tests: [not_null]
+      - name: customer_id
+        tests: [not_null]
+      - name: product_id
+        tests: [not_null]
+      - name: sale_amount
+        tests: [not_null]
+
+  - name: stg_users
+    description: "Cleaned customer records with age_group derived column."
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+      - name: email
+        tests: [not_null]
+      - name: age_group
+        tests:
+          - accepted_values:
+              values: ['18-24', '25-34', '35-44', '45-54', '55+', 'Unknown']
+
+  - name: stg_products
+    description: "Product catalogue with margin_pct derived column."
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+      - name: retail_price
+        tests: [not_null]
+
+  - name: stg_inventory_items
+    description: "Physical inventory items with sold flag."
+    columns:
+      - name: inventory_item_id
+        tests: [unique, not_null]
+
+  - name: stg_events
+    description: "User clickstream events."
+    columns:
+      - name: event_id
+        tests: [unique, not_null]

@@ -1,0 +1,106 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Date spine 2019–2026 with calendar and fiscal attributes."
+    columns:
+      - name: date_id
+        tests: [unique, not_null]
+      - name: full_date
+        tests: [unique, not_null]
+
+  - name: dim_customer
+    description: "One row per customer with CLV, RFM segment, and order KPIs."
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+      - name: clv_segment
+        tests:
+          - accepted_values:
+              values: [High, Medium, Low]
+      - name: rfm_segment
+        tests:
+          - accepted_values:
+              values: ['Champions', 'Loyal', 'Potential Loyalists', 'At Risk', 'Lost / Churned']
+      - name: lifetime_value
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: dim_product
+    description: "Product catalogue with revenue metrics and price tier."
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+      - name: retail_price
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: margin_pct
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: -100
+              max_value: 100
+      - name: price_tier
+        tests:
+          - accepted_values:
+              values: [Premium, Mid-Range, Budget]
+
+  - name: dim_order
+    description: "One row per order with shipping and return metrics."
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: shipping_tier
+        tests:
+          - accepted_values:
+              values: [Express, Standard, Slow, Unknown]
+
+  - name: fact_sales
+    description: "Central fact table — grain is one order item (sale_id)."
+    columns:
+      - name: sale_id
+        tests: [unique, not_null]
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_order')
+              field: order_id
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_id
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_product')
+              field: product_id
+      - name: date_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+      - name: sale_amount
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 10000
+      - name: profit_margin_pct
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: -100
+              max_value: 100
+
+  - name: rpt_monthly_revenue
+    description: "Pre-aggregated monthly revenue — BI-ready report table."
+    columns:
+      - name: total_revenue
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0

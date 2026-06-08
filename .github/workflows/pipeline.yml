@@ -1,0 +1,119 @@
+name: TheLook pipeline
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 2 * * *"       # 02:00 UTC daily
+  workflow_dispatch:            # manual trigger from GitHub UI
+
+env:
+  GOOGLE_APPLICATION_CREDENTIALS: ./gcp-key.json
+  GCP_PROJECT_ID:     ${{ secrets.GCP_PROJECT_ID }}
+  BQ_DATASET:         bigquery-public-data.thelook_ecommerce
+  DW_HOST:            ${{ secrets.DW_HOST }}
+  DW_PORT:            ${{ secrets.DW_PORT }}
+  DW_DATABASE:        ${{ secrets.DW_DATABASE }}
+  DW_USER:            ${{ secrets.DW_USER }}
+  DW_PASSWORD:        ${{ secrets.DW_PASSWORD }}
+  DBT_HOST:           ${{ secrets.DBT_HOST }}
+  DBT_PORT:           5432
+  DBT_DATABASE:       ${{ secrets.DBT_DATABASE }}
+  DBT_USER:           ${{ secrets.DBT_USER }}
+  DBT_PASSWORD:       ${{ secrets.DBT_PASSWORD }}
+  SLACK_WEBHOOK_URL:  ${{ secrets.SLACK_WEBHOOK_URL }}
+
+jobs:
+  pipeline:
+    name: Run pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Write GCP service account key
+        run: echo '${{ secrets.GCP_KEY_JSON }}' > gcp-key.json
+
+      - name: Write dbt profiles
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          thelook:
+            target: dev
+            outputs:
+              dev:
+                type: postgres
+                host: ${{ secrets.DBT_HOST }}
+                port: 5432
+                user: ${{ secrets.DBT_USER }}
+                password: ${{ secrets.DBT_PASSWORD }}
+                dbname: ${{ secrets.DBT_DATABASE }}
+                schema: marts
+                threads: 4
+                sslmode: require
+          EOF
+
+      # ── On push to main: lint + test only (fast feedback) ──────
+      - name: Lint Python
+        if: github.event_name == 'push'
+        run: |
+          pip install ruff
+          ruff check ingestion/ quality/ analysis/ orchestration/
+
+      - name: dbt deps + test (push only)
+        if: github.event_name == 'push'
+        run: |
+          cd dbt_project
+          dbt deps
+          dbt debug
+
+      # ── On schedule / manual: run full pipeline ────────────────
+      - name: Ingest from BigQuery
+        if: github.event_name != 'push'
+        run: python -m ingestion.extract
+
+      - name: Run dbt models
+        if: github.event_name != 'push'
+        run: |
+          cd dbt_project
+          dbt deps
+          dbt run
+
+      - name: Run dbt tests
+        if: github.event_name != 'push'
+        run: cd dbt_project && dbt test
+
+      - name: Run data quality checks
+        if: github.event_name != 'push'
+        run: |
+          python -m quality.expectations
+          python -m quality.custom_sql_checks
+
+      - name: Run Python analysis
+        if: github.event_name != 'push'
+        run: python -m analysis.eda
+
+      # ── Always: notify on failure ──────────────────────────────
+      - name: Notify Slack on failure
+        if: failure()
+        run: |
+          python - << 'EOF'
+          from orchestration.notify import notify_failure
+          notify_failure("GitHub Actions", Exception("Pipeline failed — check workflow logs."))
+          EOF
+
+      - name: Clean up credentials
+        if: always()
+        run: rm -f gcp-key.json ~/.dbt/profiles.yml

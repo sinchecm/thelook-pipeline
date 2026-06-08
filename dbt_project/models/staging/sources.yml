@@ -1,0 +1,67 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: "Raw tables ingested from BigQuery theLook eCommerce public dataset."
+
+    tables:
+      - name: orders
+        description: "One row per order placed on the platform."
+        columns:
+          - name: order_id
+            tests: [unique, not_null]
+          - name: user_id
+            tests: [not_null]
+          - name: status
+            tests:
+              - accepted_values:
+                  values: [Cancelled, Complete, Shipped, Processing, Returned]
+
+      - name: order_items
+        description: "One row per item within an order (grain of the fact table)."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+          - name: order_id
+            tests: [not_null]
+          - name: user_id
+            tests: [not_null]
+          - name: product_id
+            tests: [not_null]
+          - name: sale_price
+            tests: [not_null]
+
+      - name: users
+        description: "One row per registered customer."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+          - name: email
+            tests: [not_null]
+
+      - name: products
+        description: "Product catalogue — one row per SKU."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+          - name: retail_price
+            tests: [not_null]
+
+      - name: inventory_items
+        description: "Each physical inventory item ever stocked."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+
+      - name: events
+        description: "User clickstream events."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+
+      - name: distribution_centers
+        description: "Warehouse / distribution center locations."
+        columns:
+          - name: id
+            tests: [unique, not_null]

@@ -1,0 +1,60 @@
+default_environment: dev
+project_id: 019ea557-a1ff-7d26-b380-aebd291f0b67
+environments:
+- name: dev
+- name: staging
+- name: prod
+send_anonymous_usage_stats: false
+plugins:
+  extractors:
+  - name: tap-bigquery
+    variant: anelendata
+    pip_url: tap-bigquery
+    config:
+      credentials_path: /home/ming/Data_Science_AI/Module_2/5m-data-2.6-data-pipelines-orchestration/trade-for-living-de85c23369af.json
+      start_datetime: '2024-01-01T00:00:00Z'
+      streams:
+      - name: orders
+        table: bigquery-public-data.thelook_ecommerce.orders
+        columns:
+        - '*'
+        datetime_key: created_at
+      - name: order_items
+        table: bigquery-public-data.thelook_ecommerce.order_items
+        columns:
+        - '*'
+        datetime_key: created_at
+      - name: users
+        table: bigquery-public-data.thelook_ecommerce.users
+        columns:
+        - '*'
+        datetime_key: created_at
+      - name: products
+        table: bigquery-public-data.thelook_ecommerce.products
+        columns:
+        - '*'
+      - name: inventory_items
+        table: bigquery-public-data.thelook_ecommerce.inventory_items
+        columns:
+        - '*'
+        datetime_key: created_at
+      - name: events
+        table: bigquery-public-data.thelook_ecommerce.events
+        columns:
+        - '*'
+        datetime_key: created_at
+      - name: distribution_centers
+        table: bigquery-public-data.thelook_ecommerce.distribution_centers
+        columns:
+        - '*'
+  loaders:
+  - name: target-postgres
+    variant: meltanolabs
+    pip_url: meltanolabs-target-postgres
+    config:
+      host: localhost
+      port: 5433
+      database: thelook_dw
+      user: pipeline_user
+      default_target_schema: raw
+      ssl_enable: false

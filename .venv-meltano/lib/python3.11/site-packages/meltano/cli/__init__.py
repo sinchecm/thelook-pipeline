@@ -1,0 +1,154 @@
+"""Main entry point for the meltano CLI."""
+
+from __future__ import annotations
+
+import logging
+import os
+import sys
+import typing as t
+import warnings
+
+import structlog
+
+from meltano.cli import (
+    add,
+    config,
+    docs,
+    dragon,
+    elt,
+    environment,
+    hub,
+    initialize,
+    install,
+    invoke,
+    job,
+    lock,
+    logs,
+    remove,
+    run,
+    schedule,
+    schema,
+    select_entities,
+    state,
+    upgrade,
+    validate,
+)
+from meltano.cli import compile as compile_module
+from meltano.cli.cli import cli
+from meltano.cli.utils import CliError
+from meltano.core._compat import MeltanoInternalDeprecationWarning
+from meltano.core.error import MeltanoError, ProjectReadonly
+from meltano.core.logging import setup_logging
+
+if t.TYPE_CHECKING:
+    from meltano.core.tracking.tracker import Tracker
+
+cli.add_command(add.add)
+cli.add_command(compile_module.compile_command)
+cli.add_command(config.config)
+cli.add_command(docs.docs)
+cli.add_command(dragon.dragon)
+cli.add_command(elt.el)
+cli.add_command(elt.elt)
+cli.add_command(environment.meltano_environment)
+cli.add_command(hub.hub)
+cli.add_command(initialize.init)
+cli.add_command(install.install)
+cli.add_command(invoke.invoke)
+cli.add_command(lock.lock)
+cli.add_command(logs.logs)
+cli.add_command(remove.remove)
+cli.add_command(schedule.schedule)
+cli.add_command(schema.schema)
+cli.add_command(select_entities.select)
+cli.add_command(state.meltano_state)
+cli.add_command(upgrade.upgrade)
+cli.add_command(run.run)
+cli.add_command(validate.test)
+cli.add_command(job.job)
+
+# Holds the exit code for error reporting during process exiting. In
+# particular, a function registered by the `atexit` module uses this value.
+exit_code: int | None = None
+
+atexit_handler_registered = False
+exit_code_reported = False
+exit_event_tracker: Tracker | None = None
+
+setup_logging()
+
+logger = structlog.stdlib.get_logger(__name__)
+
+troubleshooting_message = """\
+Need help fixing this problem? Visit https://melta.no/ for troubleshooting steps, or to \
+join our friendly Slack community.
+"""  # noqa: E501
+
+
+def handle_meltano_error(error: MeltanoError) -> t.NoReturn:
+    """Handle a MeltanoError.
+
+    Args:
+        error: The error to handle.
+
+    Raises:
+        CliError: always.
+    """
+    raise CliError(str(error), exit_code=error.exit_code()) from None
+
+
+def _run_cli() -> None:
+    """Run the Meltano CLI.
+
+    Raises:
+        KeyboardInterrupt: if caught.
+    """
+    try:
+        try:
+            cli(obj={"project": None})
+        except ProjectReadonly as err:
+            raise CliError(  # noqa: TRY003
+                f"The requested action could not be completed: {err}",  # noqa: EM102
+            ) from err
+        except KeyboardInterrupt:
+            raise
+        except MeltanoError as err:
+            handle_meltano_error(err)
+        except CliError:
+            raise
+        except Exception as err:
+            raise CliError(str(err)) from err
+    except CliError as cli_error:
+        cli_error.print()
+        logger.info(troubleshooting_message)
+        sys.exit(cli_error.exit_code)
+
+
+def main() -> None:
+    """Entry point for the meltano CLI."""
+    # Mark the current process as executed via the CLI
+    logging.captureWarnings(capture=True)
+    warnings.filterwarnings("once", category=DeprecationWarning)
+    warnings.filterwarnings("ignore", category=MeltanoInternalDeprecationWarning)
+    os.environ["MELTANO_JOB_TRIGGER"] = os.getenv("MELTANO_JOB_TRIGGER", "cli")
+    try:
+        _run_cli()
+    finally:
+        global exit_code
+        ex = sys.exc_info()[1]
+        if ex is None:
+            exit_code = 0
+        elif isinstance(ex, SystemExit):
+            if ex.code is None:
+                exit_code = 0
+            else:
+                try:
+                    exit_code = int(ex.code)
+                except ValueError:
+                    exit_code = 1
+        else:
+            exit_code = 1
+        # Track the exit event now to provide more details via the exception context.
+        # We assume the process will exit practically immediately after `main` returns.
+        if exit_event_tracker is not None:
+            exit_event_tracker.track_exit_event()

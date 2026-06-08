@@ -1,0 +1,3 @@
+[32m2026-06-08 16:54:29 +0800[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 5482f085-67e5-4a39-bd0f-80054f417dfe - 437151 - LOGS_CAPTURED - Capturing logs for process (pid: 437151).
+[32m2026-06-08 16:54:29 +0800[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 5482f085-67e5-4a39-bd0f-80054f417dfe - 437151 - raw_tables - STEP_START - Started execution of step "raw_tables".
+[32m2026-06-08 16:54:29 +0800[0m - dagster - [34mINFO[0m - __ASSET_JOB - 5482f085-67e5-4a39-bd0f-80054f417dfe - raw_tables - Starting ingestion from BigQuery...

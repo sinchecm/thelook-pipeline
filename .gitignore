@@ -1,0 +1,36 @@
+# Secrets — never commit
+.env
+gcp-key.json
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# dbt
+dbt_project/target/
+dbt_project/dbt_packages/
+dbt_project/logs/
+
+# Dagster
+.dagster/
+
+# Analysis outputs
+analysis/outputs/*.png
+analysis/outputs/*.csv
+analysis/outputs/*.html
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

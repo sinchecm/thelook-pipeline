@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: int_customer_orders
+    description: "Customer + aggregated order KPIs. Source for dim_customer."
+
+  - name: int_orders_enriched
+    description: "Orders with item-count totals and shipping tier. Source for dim_order."
+
+  - name: int_product_metrics
+    description: "Products with revenue and volume aggregates. Source for dim_product."
