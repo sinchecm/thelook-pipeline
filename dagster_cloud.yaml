@@ -1,6 +1,4 @@
 locations:
   - location_name: thelook_pipeline
-    code_from:
+    code_source:
       python_file: orchestration/pipeline.py
-    build:
-      directory: .
