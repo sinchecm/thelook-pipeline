@@ -28,13 +28,13 @@ st.markdown("""
     html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     .stApp { background-color: #FFFFFF; color: #1F2937; }
+    button[data-testid="collapsedControl"] { color: #000000 !important; background-color: #E5E7EB !important; width: 40px !important; height: 40px !important; border-radius: 50% !important; font-size: 20px !important; position: fixed !important; top: 20px !important; left: 20px !important; z-index: 999 !important; }
     [data-testid="stSidebar"] { background-color: #F8F9FA; border-right: 1px solid #E5E7EB; }
     .kpi-card { background: linear-gradient(135deg, #1E293B 0%, #162032 100%); border: 1px solid #334155; border-radius: 12px; padding: 1.25rem 1.5rem; position: relative; overflow: hidden; }
     .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; border-radius: 2px 0 0 2px; }
     .kpi-card.teal::before  { background: #0D9488; }
     .kpi-card.blue::before  { background: #3B82F6; }
     .kpi-card.purple::before{ background: #8B5CF6; }
-    .kpi-card.amber::before { background: #F59E0B; }
     .kpi-card.green::before { background: #10B981; }
     .kpi-card.red::before   { background: #EF4444; }
     .kpi-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #64748B; margin-bottom: 6px; }
