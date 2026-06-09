@@ -67,8 +67,8 @@ def query(sql: str) -> pd.DataFrame:
     with get_engine().connect() as conn:
         return pd.read_sql(sql, conn)
 
-PLOT_BG = "#0F172A"; PAPER_BG = "#1E293B"; GRID_COLOR = "#1E293B"
-TEXT_COLOR = "#94A3B8"; TEAL = "#0D9488"; BLUE = "#3B82F6"
+PLOT_BG = "#FFFFFF"; PAPER_BG = "#FFFFFF"; GRID_COLOR = "#E5E7EB"
+TEXT_COLOR = "#1F2937"; TEAL = "#0D9488"; BLUE = "#3B82F6"
 PURPLE = "#8B5CF6"; AMBER = "#F59E0B"; GREEN = "#10B981"; RED = "#EF4444"
 
 def base_layout(title="", height=360):
