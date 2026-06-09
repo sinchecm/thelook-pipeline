@@ -150,7 +150,7 @@ def kpi_card(col, label, value, color="teal"):
     </div>""", unsafe_allow_html=True)
 
 c1,c2,c3,c4,c5,c6 = st.columns(6)
-kpi_card(c1, "Total Revenue", f"${float(k['total_revenue']/1_000_000:.1f}M", "teal")
+kpi_card(c1, "Total Revenue", "${:.1f}M".format(float(k['total_revenue'])/1_000_000), "teal")
 kpi_card(c2, "Total Orders",    f"{int(k['total_orders']):,}",         "blue")
 kpi_card(c3, "Customers",       f"{int(k['total_customers']):,}",      "purple")
 kpi_card(c4, "Avg Order Value", f"${float(k['avg_order_value']):.2f}", "amber")
