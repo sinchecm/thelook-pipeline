@@ -15,7 +15,7 @@ from datetime import datetime
 
 load_dotenv()
 
-st.set_page_config(initial_sidebar_state="expanded", 
+st.set_page_config(
     page_title="TheLook Analytics",
     page_icon="🛍️",
     layout="wide",
