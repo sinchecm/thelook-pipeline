@@ -86,8 +86,8 @@ def base_layout(title="", height=360):
 with st.sidebar:
     st.markdown("""
     <div style="padding:.5rem 0 1.5rem">
-        <div style="font-size:22px;font-weight:600;color:#F1F5F9;">🛍️ TheLook</div>
-        <div style="font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:.05em">Analytics Dashboard</div>
+        <div style="font-size:22px;font-weight:600;color:#111827;">🛍️ TheLook</div>
+        <div style="font-size:11px;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Analytics Dashboard</div>
     </div>""", unsafe_allow_html=True)
 
     st.markdown("**Filters**")
