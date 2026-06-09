@@ -27,8 +27,8 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
     html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
-    .stApp { background-color: #0B0F1A; color: #E2E8F0; }
-    [data-testid="stSidebar"] { background-color: #111827; border-right: 1px solid #1E293B; }
+    .stApp { background-color: #FFFFFF; color: #1F2937; }
+    [data-testid="stSidebar"] { background-color: #F8F9FA; border-right: 1px solid #E5E7EB; }
     .kpi-card { background: linear-gradient(135deg, #1E293B 0%, #162032 100%); border: 1px solid #334155; border-radius: 12px; padding: 1.25rem 1.5rem; position: relative; overflow: hidden; }
     .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; border-radius: 2px 0 0 2px; }
     .kpi-card.teal::before  { background: #0D9488; }
