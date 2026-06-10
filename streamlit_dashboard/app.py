@@ -28,9 +28,10 @@ st.markdown("""
     html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     .stApp { background-color: #FFFFFF; color: #1F2937; }
-    button[data-testid="collapsedControl"] { color: #000000 !important; background-color: #E5E7EB !important; width: 40px !important; height: 40px !important; border-radius: 50% !important; font-size: 20px !important; position: fixed !important; top: 20px !important; left: 20px !important; z-index: 999 !important; }
-    [data-testid="stSidebar"] { background-color: #F8F9FA; border-right: 1px solid #E5E7EB; }
-    .kpi-card { background: linear-gradient(135deg, #1E293B 0%, #162032 100%); border: 1px solid #334155; border-radius: 12px; padding: 1.25rem 1.5rem; position: relative; overflow: hidden; }
+    section[data-testid="stSidebar"][aria-expanded="false"] { min-width: 50px !important; }
+    button[data-testid="collapsedControl"] { background-color: #0D9488 !important; color: #FFFFFF !important; border-radius: 0 8px 8px 0 !important; width: 32px !important; height: 60px !important; position: fixed !important; top: 45% !important; left: 0 !important; z-index: 9999 !important; }
+    button[data-testid="collapsedControl"] svg { fill: #FFFFFF !important; width: 20px !important; height: 20px !important; }
+    .kpi-card { background: linear-gradient(135deg, #F8F9FA 0%, #F1F5F9 100%); border: 1px solid #334155; border-radius: 12px; padding: 1.25rem 1.5rem; position: relative; overflow: hidden; }
     .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; border-radius: 2px 0 0 2px; }
     .kpi-card.teal::before  { background: #0D9488; }
     .kpi-card.blue::before  { background: #3B82F6; }
@@ -38,8 +39,8 @@ st.markdown("""
     .kpi-card.green::before { background: #10B981; }
     .kpi-card.red::before   { background: #EF4444; }
     .kpi-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #64748B; margin-bottom: 6px; }
-    .kpi-value { font-size: 28px; font-weight: 600; color: #F1F5F9; line-height: 1.1; font-family: 'DM Mono', monospace; }
-    .section-header { font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #475569; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #1E293B; }
+    .kpi-value { font-size: 28px; font-weight: 600; color: #111827; line-height: 1.1; font-family: 'DM Mono', monospace; }
+    .section-header { font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #475569; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #E5E7EB; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -87,7 +88,8 @@ with st.sidebar:
     st.markdown("""
     <div style="padding:.5rem 0 1.5rem">
         <div style="font-size:22px;font-weight:600;color:#111827;">🛍️ TheLook</div>
-        <div style="font-size:11px;color:#6B7280;text-transform:uppercase;letter-spacing:.05em">Analytics Dashboard</div>
+        <div style="font-size:11px;color:#6B7280
+                ;text-transform:uppercase;letter-spacing:.05em">Analytics Dashboard</div>
     </div>""", unsafe_allow_html=True)
 
     st.markdown("**Filters**")
