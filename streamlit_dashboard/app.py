@@ -28,6 +28,23 @@ st.markdown("""
     html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     .stApp { background-color: #FFFFFF; color: #1F2937; }
+    [data-testid="stSidebarCollapsedControl"] {
+        background-color: #0D9488 !important;
+        border-radius: 0 8px 8px 0 !important;
+        width: 2rem !important;
+        height: 4rem !important;
+        position: fixed !important;
+        top: 45% !important;
+        left: 0 !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] svg {
+        fill: #FFFFFF !important;
+        stroke: #FFFFFF !important;
+    }
     section[data-testid="stSidebar"][aria-expanded="false"] { min-width: 50px !important; }
     button[data-testid="collapsedControl"] { background-color: #0D9488 !important; color: #FFFFFF !important; border-radius: 0 8px 8px 0 !important; width: 32px !important; height: 60px !important; position: fixed !important; top: 45% !important; left: 0 !important; z-index: 9999 !important; }
     button[data-testid="collapsedControl"] svg { fill: #FFFFFF !important; width: 20px !important; height: 20px !important; }
