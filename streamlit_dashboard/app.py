@@ -26,7 +26,7 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
     html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
-    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+    #MainMenu {visibility: hidden;} footer {visibility: hidden;}
     .stApp { background-color: #FFFFFF; color: #1F2937; }
     [data-testid="stSidebarCollapsedControl"] {
         background-color: #0D9488 !important;
@@ -56,7 +56,7 @@ st.markdown("""
     .kpi-card.green::before { background: #10B981; }
     .kpi-card.red::before   { background: #EF4444; }
     .kpi-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #64748B; margin-bottom: 6px; }
-    .kpi-value { font-size: 28px; font-weight: 600; color: #111827; line-height: 1.1; font-family: 'DM Mono', monospace; }
+    .kpi-value { font-size: 22px; font-weight: 600; color: #111827; line-height: 1.1; font-family: 'DM Mono', monospace; }
     .section-header { font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #475569; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #E5E7EB; }
 </style>
 """, unsafe_allow_html=True)
@@ -170,7 +170,7 @@ def kpi_card(col, label, value, color="teal"):
 
 c1,c2,c3,c4,c5,c6 = st.columns(6)
 kpi_card(c1, "Total Revenue", "${:.1f}M".format(float(k['total_revenue'])/1_000_000), "teal")
-kpi_card(c2, "Total Orders",    f"{int(k['total_orders']):,}",         "blue")
+kpi_card(c2, "Total Orders",    "{:,}".format(int(k['total_orders'])),  "blue")
 kpi_card(c3, "Customers",       f"{int(k['total_customers']):,}",      "purple")
 kpi_card(c4, "Avg Order Value", f"${float(k['avg_order_value']):.2f}", "amber")
 kpi_card(c5, "Avg Margin",      f"{float(k['avg_margin_pct']):.1f}%",  "green")
